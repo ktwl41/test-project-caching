@@ -7,14 +7,14 @@ jobs:
     steps:
       # look for existing cache and restore if found
       - restore_cache:
-          key: v1-deps-{{ checksum ".circleci/config.yml" }}
+          key: v1-deps
       # install dependencies    
       - run:
           name: install dependencies
           command: npm install serverless
       # save any changes to the cache
       - save_cache:
-          key: v1-deps-{{ checksum ".circleci/config.yml" }}
+          key: v1-deps
           paths: 
             - node_modules   
       - run:

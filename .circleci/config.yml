@@ -1,17 +1,27 @@
 version: 2.1
 
 jobs:
-  echo:
+  build:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:lts
     steps:
+      # look for existing cache and restore if found
+      - restore_cache:
+          key: v1-deps-{{ checksum ".circleci/config.yml" }}
+      # install dependencies    
       - run:
-          name: Greet
-          command: echo "I love ${COLOR} builds."
-          environment:
-            COLOR: "green"
+          name: install dependencies
+          command: npm install serverless
+      # save any changes to the cache
+      - save_cache:
+          key: v1-deps-{{ checksum ".circleci/config.yml" }}
+          paths: 
+            - node_modules   
+      - run:
+          name: test
+          command: npx sls --version
 
 workflows:
   main:
     jobs:
-      - echo
+      - build
